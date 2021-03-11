@@ -1,7 +1,3 @@
-//Define global variables
-let playerWinstreak = 0;
-let computerWinstreak = 0;
-
 //Randomly select rock, paper, or scissors for the computer opponent
 function computerPlay(){
     let randomNumber = Math.floor(Math.random()*3+1);
@@ -23,20 +19,36 @@ function computerPlay(){
     return choice;
 }
 
-//Determines player selection based on button ID, returns string declaring winner
-function playRound(){
+function userPlay(){
+    
+    //Prompt user for their choice
+    playerChoice = prompt("Please input rock, paper, or scissors")
+
+    //Ignore upper-case characters in player selection
+    playerChoice = playerChoice.toLowerCase();
+
+    return playerChoice;
+}
+
+function inputValidation(input){
+    choice = input
+    while(choice != "rock" && choice != "paper" && choice != "scissors"){
+        choice = userPlay();
+    };
+    return choice;
+
+}
+
+//Inputs player selection and computer selection, returns string declaring winner
+function playRound(computerSelection,playerSelection){
 
     //Define variable to store winner
     let winner;
     let output;
 
-    //Determine player and computer's moves
-    let computerSelection = computerPlay();
-    let playerSelection = this.id;
-
     //Determine who won
     switch(playerSelection){
-        case "rockButton":
+        case "rock":
             switch(computerSelection){
                 case "rock":
                     winner = "tie"
@@ -53,7 +65,7 @@ function playRound(){
             }
         break;
 
-        case "paperButton":
+        case "paper":
             switch(computerSelection){
                 case "rock":
                     winner = "player"
@@ -72,11 +84,11 @@ function playRound(){
             }
         break;
 
-        case "scissorsButton":
+        case "scissors":
             switch(computerSelection){
                 case "rock":
                     winner = "computer"
-                    output = "Rock beats scissors. The computer wins."
+                    output = "Rock beats paper. The computer wins."
                     break;
         
                 case "paper":
@@ -93,37 +105,36 @@ function playRound(){
 
     }
 
-    if(winner === "player"){
-        playerWinstreak ++;
-    }else{
-        computerWinstreak ++
-    }
-
-    if (playerWinstreak >=5){
-        output += " You won 5 times!"
-    } else if (computerWinstreak >=5){
-        output += " The computer won 5 times!"
-    }
-
     //Return the outcome of the round
-    outputResults(output);
+    return output;
 
 }
 
-function outputResults(inputText){
-    //Tell player who won
-    outputObject = document.querySelector('#outputDiv');
-    outputObject.textContent = inputText;
+function game(){
 
-    //Update winstreaks
-    scoreObject = document.querySelector('#score');
-    scoreObject.innerHTML = "Player:" + playerWinstreak + "<br>Computer:"+computerWinstreak
+    //Initialize variables
+    let computerChoice;
+    let playerChoice;
+    let winner;
+    let round = 1;
 
+    while (round <= 5){
+
+        //Store the computer's choice
+        computerChoice = computerPlay();
+
+        //Store the player's choice
+        playerChoice = userPlay();
+
+        //Validate the player made a valid choice, reprompt until they do
+        playerChoice = inputValidation(playerChoice);
+
+        //Determine the winner
+        winner = playRound(computerChoice, playerChoice);
+
+        //Display the winner
+        console.log(winner);
+
+        round ++;
+    }
 }
-
-//Find and store all buttons
-let buttons = document.querySelectorAll('.playButton');
-buttons.forEach((button) => {
-    button.addEventListener('click',playRound)
-})
-
